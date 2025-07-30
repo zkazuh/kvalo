@@ -21,8 +21,9 @@ function App() {
       const data = snapshot.val();
       if (data) {
         const msgs = Object.values(data)
-          .filter((m): m is Message => !!m.nick && !!m.text)
-          .sort((a: any, b: any) => a.timestamp - b.timestamp);
+          .filter((m): m is Message => typeof m === 'object' && !!m.nick && !!m.text)
+          .sort((a, b) => a.timestamp - b.timestamp);
+
         setMessages(msgs);
       }
     });
