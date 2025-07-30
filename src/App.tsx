@@ -20,10 +20,17 @@ function App() {
     onValue(messageRef, (snapshot) => {
       const data = snapshot.val();
       if (data) {
-        const msgs = Object.values(data)
-          .filter((m): m is Message => typeof m === 'object' && !!m.nick && !!m.text)
-          .sort((a, b) => a.timestamp - b.timestamp);
-
+              const msgs = Object.values(data as Record<string, unknown>)
+                .filter((m): m is Message => {
+                  return (
+                    typeof m === 'object' &&
+                    m !== null &&
+                    'nick' in m &&
+                    'text' in m &&
+                    'timestamp' in m
+                  );
+                })
+                .sort((a, b) => a.timestamp - b.timestamp);
         setMessages(msgs);
       }
     });
