@@ -2,17 +2,20 @@ import { useEffect, useState } from 'react';
 import { nickGen } from './utilities/scripts';
 import { ref, push, onValue } from 'firebase/database';
 import { database } from './services/firebase';
+import './components/app.css';
 
 type Message = {
   nick: string;
   text: string;
-  timestamp: number;
+  timestamp: number ;
+  dateString: string;
 };
 
 function App() {
   const [nick] = useState(nickGen());
   const [messages, setMessages] = useState<Message[]>([]);
   const [inputValue, setInputValue] = useState('');
+  const visibleMessagesCount = messages.slice(-100);
 
   useEffect(() => {
     const messageRef = ref(database, 'messages');
@@ -36,32 +39,40 @@ function App() {
     });
   }, []);
 
+  const submitMessage = 
+(e: React.FormEvent) => {
+    e.preventDefault();
+    if (inputValue.trim()) {
+      const messageRef = ref(database, 'messages');
+      push(messageRef, {
+        nick,
+        text: inputValue.trim(),
+        timestamp: Date.now(),
+        dateString: new Date().toLocaleString(),
+      });
+      setInputValue('');
+    }
+  }
+
   return (
     <div id="chat">
       <title>Bostil</title>
       <h1>Global chat</h1>
       <div id="chat-messages">
-        <ul>
-          {messages.map((message, index) => (
-            <li key={index}>
-              <strong>{message.nick}</strong>: {message.text}
-            </li>
+        <div id="chat-header">
+          {visibleMessagesCount.map((message, index) => (
+            <div className="chat-message" key ={index}>
+              <span className="timestamp">
+                {new Date(message.timestamp).toLocaleTimeString()}
+              </span>
+              <strong>{" "}{message.nick}</strong>: {message.text}
+            </div>
           ))}
-        </ul>
-        <form
-          onSubmit={(e) => {
-            e.preventDefault();
-            if (inputValue.trim()) {
-              const messageRef = ref(database, 'messages');
-              push(messageRef, {
-                nick,
-                text: inputValue.trim(),
-                timestamp: Date.now(),
-              });
-              setInputValue('');
-            }
-          }}
-        >
+        </div>
+      </div>
+          <form id="chat-form"
+          onSubmit={(e) => {submitMessage(e)}}
+          >
           <input
             type="text"
             value={inputValue}
@@ -70,7 +81,6 @@ function App() {
           />
           <button type="submit">Send</button>
         </form>
-      </div>
     </div>
   );
 }

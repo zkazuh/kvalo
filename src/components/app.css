@@ -1,0 +1,30 @@
+body{
+    margin: 0;
+    background-color: #1e1e2f;
+    color: #f0f0f0;
+    font-family: 'JetBrains Mono';font-size: 14px;;
+    height: 80vh;
+    padding: 16px;
+    flex-direction: column;
+    display: flex;
+}
+
+#chat-messages {
+  flex: 1;
+  overflow-y: auto; 
+  margin-bottom: 16px;
+  padding-right: 8px;
+  padding-top: 50px;
+  max-height: 500px;
+  max-width: 500px;
+  margin-bottom: 16px;
+  border:#850606 2px solid;
+    border-radius: 8px;
+
+}
+#chat-header {
+    max-width: 100%;
+    white-space: normal;
+    word-wrap: break-word;
+    overflow-wrap: break-word;  
+}
